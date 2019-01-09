@@ -2,7 +2,7 @@ LIBS = -lncurses
 CC = g++
 CFLAGS = -Wall
 
-tetris: tetris.cpp
+tetris: tetris.c
 	$(CC) tetris.c $(CFLAGS) $(LIBS)
 
 clean:
