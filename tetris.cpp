@@ -3,8 +3,8 @@
 #include <ncurses.h>
 #include <unistd.h>
 
-static const int width = 12;
-static const int height = 18;
+static const int WIDTH = 12;
+static const int HEIGHT = 18;
 
 static const int FILLED_LINE = 8;
 static const int BOUNDARY = 9;
@@ -12,8 +12,6 @@ static const int EMPTY_SQUARE = 0;
 
 unsigned char *field = nullptr;
 std::string tetromino[7];
-
-//hello
 
 int rotate(int tetrominoX, int tetrominoY, int rotation) {
     int squareIndex = 0;
@@ -42,10 +40,10 @@ bool isCollision(int tetrominoIndex, int rotation, int x, int y) {
     for (int tetrominoX = 0; tetrominoX < 4; tetrominoX++) {
         for (int tetrominoY = 0; tetrominoY < 4; tetrominoY++) {
             int squareIndex = rotate(tetrominoX, tetrominoY, rotation);
-            int fieldIndex = (y + tetrominoY) * width + x + tetrominoX;
+            int fieldIndex = (y + tetrominoY) * WIDTH + x + tetrominoX;
 
-            if (x + tetrominoX >= 0 && x + tetrominoX < width) {
-                if (y + tetrominoY >= 0 && y + tetrominoY < height) {
+            if (x + tetrominoX >= 0 && x + tetrominoX < WIDTH) {
+                if (y + tetrominoY >= 0 && y + tetrominoY < HEIGHT) {
                     if (tetromino[tetrominoIndex][squareIndex] == 'X' && field[fieldIndex] != 0)
                         return true;
                 }
@@ -57,9 +55,9 @@ bool isCollision(int tetrominoIndex, int rotation, int x, int y) {
 }
 
 void drawField() {
-    for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
-            mvaddch(y, x, " ABCDEFG=#"[field[y * width + x]]);
+    for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
+            mvaddch(y, x, " ABCDEFG=#"[field[y * WIDTH + x]]);
         }
     }
 }
@@ -75,15 +73,15 @@ void drawTetromino(int currentTetromino, int currentX, int currentY, int current
 }
 
 void drawNextTetromino(int nextTetromino) {
-    mvprintw(0, width + 3, "Next tetromino:");
+    mvprintw(0, WIDTH + 3, "Next tetromino:");
 
     for (int tetrominoX = 0; tetrominoX < 4; tetrominoX++) {
         for (int tetrominoY = 0; tetrominoY < 4; tetrominoY++) {
-            mvaddch(2 + tetrominoY, width + 7 + tetrominoX, ' ');
+            mvaddch(2 + tetrominoY, WIDTH + 7 + tetrominoX, ' ');
         }
     }
 
-    drawTetromino(nextTetromino, width + 7, 2, 0);
+    drawTetromino(nextTetromino, WIDTH + 7, 2, 0);
 }
 
 void animateFilledLines(std::vector<int> filledLines) {
@@ -92,9 +90,9 @@ void animateFilledLines(std::vector<int> filledLines) {
             usleep(400000);
 
             for (auto &line : filledLines) {
-                for (int x = 1; x < width - 1; x++) {
+                for (int x = 1; x < WIDTH - 1; x++) {
                     for (int lineY = line; lineY > 0; lineY--) {
-                        field[lineY * width + x] = field[(lineY - 1) * width + x];
+                        field[lineY * WIDTH + x] = field[(lineY - 1) * WIDTH + x];
                         field[x] = EMPTY_SQUARE;
                     }
                 }
@@ -106,10 +104,10 @@ void animateFilledLines(std::vector<int> filledLines) {
 }
 
 void initField() {
-    field = new unsigned char[width * height];
-    for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
-            field[y * width + x] = (x == 0 || x == width - 1 || y == height - 1) ? BOUNDARY : EMPTY_SQUARE;
+    field = new unsigned char[WIDTH * HEIGHT];
+    for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
+            field[y * WIDTH + x] = (x == 0 || x == WIDTH - 1 || y == HEIGHT - 1) ? BOUNDARY : EMPTY_SQUARE;
         }
     }
 }
@@ -158,7 +156,7 @@ int main() {
     int currentTetromino = randTetromino();
     int nextTetromino = randTetromino();
     int currentRotation = 0;
-    int currentX = width / 2;
+    int currentX = WIDTH / 2;
     int currentY = 0;
 
     bool gameOver = false;
@@ -180,7 +178,7 @@ int main() {
     nodelay(stdscr, TRUE);
     scrollok(stdscr, TRUE);
 
-    mvprintw(height + 5, 2, "a, s, d - movements; space - rotation, q - exit");
+    mvprintw(HEIGHT + 5, 2, "a, s, d - movements; space - rotation, q - exit");
 
     while (!gameOver) {
         speedCounter++;
@@ -205,7 +203,7 @@ int main() {
                 for (int tetrominoX = 0; tetrominoX < 4; tetrominoX++) {
                     for (int tetrominoY = 0; tetrominoY < 4; tetrominoY++) {
                         if (tetromino[currentTetromino][rotate(tetrominoX, tetrominoY, currentRotation)] == 'X') {
-                            field[(currentY + tetrominoY) * width + (currentX + tetrominoX)] = currentTetromino + 1;
+                            field[(currentY + tetrominoY) * WIDTH + (currentX + tetrominoX)] = currentTetromino + 1;
                         }
                     }
                 }
@@ -216,15 +214,15 @@ int main() {
                 }
 
                 for (int tetrominoY = 0; tetrominoY < 4; tetrominoY++) {
-                    if (currentY + tetrominoY < height - 1) {
+                    if (currentY + tetrominoY < HEIGHT - 1) {
                         bool isLineFilled = true;
-                        for (int tetrominoX = 1; tetrominoX < width - 1; tetrominoX++) {
-                            isLineFilled &= (field[(currentY + tetrominoY) * width + tetrominoX]) != EMPTY_SQUARE;
+                        for (int tetrominoX = 1; tetrominoX < WIDTH - 1; tetrominoX++) {
+                            isLineFilled &= (field[(currentY + tetrominoY) * WIDTH + tetrominoX]) != EMPTY_SQUARE;
                         }
 
                         if (isLineFilled) {
-                            for (int tetrominoX = 1; tetrominoX < width - 1; tetrominoX++) {
-                                field[(currentY + tetrominoY) * width + tetrominoX] = FILLED_LINE;
+                            for (int tetrominoX = 1; tetrominoX < WIDTH - 1; tetrominoX++) {
+                                field[(currentY + tetrominoY) * WIDTH + tetrominoX] = FILLED_LINE;
                             }
 
                             filledLines.push_back(currentY + tetrominoY);
@@ -238,7 +236,7 @@ int main() {
                     score += (1 << filledLines.size()) * 100;
                 }
 
-                currentX = width / 2;
+                currentX = WIDTH / 2;
                 currentY = 0;
                 currentRotation = 0;
                 currentTetromino = nextTetromino;
@@ -257,8 +255,8 @@ int main() {
         drawNextTetromino(nextTetromino);
         animateFilledLines(filledLines);
 
-        mvprintw(height - 1, width + 5, "Formed lines: %3d", formedLines);
-        mvprintw(height - 2, width + 5, "Score: %10d", score);
+        mvprintw(HEIGHT - 1, WIDTH + 5, "Formed lines: %3d", formedLines);
+        mvprintw(HEIGHT - 2, WIDTH + 5, "Score: %10d", score);
         
         refresh();
         usleep(50000);
