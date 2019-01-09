@@ -3,7 +3,7 @@ CC = g++
 CFLAGS = -Wall
 
 tetris: tetris.cpp
-	$(CC) tetris.cpp $(CFLAGS) $(LIBS)
+	$(CC) tetris.c $(CFLAGS) $(LIBS)
 
 clean:
 	-rm -f *.out
