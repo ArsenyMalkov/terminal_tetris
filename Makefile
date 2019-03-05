@@ -1,5 +1,5 @@
 LIBS = -lncurses
-CC = g++
+CC = gcc
 CFLAGS = -Wall
 
 tetris: tetris.c
