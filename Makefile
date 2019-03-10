@@ -1,9 +1,9 @@
 LIBS = -lncurses
-CC = gcc
+CC = g++
 CFLAGS = -Wall
 
-tetris: tetris.c
-	$(CC) tetris.c $(CFLAGS) $(LIBS)
+tetris: tetris.cc
+	$(CC) tetris.cc $(CFLAGS) $(LIBS)
 
 clean:
 	-rm -f *.out
